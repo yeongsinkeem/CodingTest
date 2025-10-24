@@ -3,47 +3,47 @@ import java.util.*;
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
         ArrayList<Integer> answerArr = new ArrayList<>();
-
-        int count = 1;
+        Queue<Integer> queue = new LinkedList<>();
         
-        // 1. 일자 계산 및 Queue 준비 
-        int n = progresses.length;
-        int day;
-        int[] days = new int[n];
-        Queue<Integer> q = new LinkedList<>();
+        // 1. 작업 일수 큐 생성 
+        int[] left = new int[progresses.length];
+        int days = 0;
         
-        for(int i = 0; i < n; i++) {
-            // 이때 나머지가 있으면 + 1
-            int left = (100-progresses[i]) % speeds[i];
-            if(left > 0) {
-                day = ((100 - progresses[i]) / speeds[i]) + 1;
+        for(int i = 0; i < left.length; i++) {
+            int mod = (100 - progresses[i]) % speeds[i];
+            if( mod != 0 ) {
+                days = (100 - progresses[i]) / speeds[i] + 1;
             }
             else {
-                day = (100 - progresses[i]) / speeds[i];
+                days = (100 - progresses[i]) / speeds[i];
             }
-            q.add(day);
+            queue.add(days);
         }
         
-        // 2. 배포 
-        int first = q.poll();
-        while( !q.isEmpty() ) {
-            int next = q.poll();
-            if(first >= next) {
-                count++;
+        int count = 1;
+        // 2. 큐 활용
+        // 꺼낸 원소보다 작거나 같 vs 큰지 ?
+        int n = queue.poll();
+        while(!queue.isEmpty()) {
+            if( n >= queue.peek() ) {
+                count ++;
+                queue.poll();
             }
             else {
-                first = next;
                 answerArr.add(count);
                 count = 1;
+                n = queue.poll();
             }
         }
         
-        answerArr.add(count);
+        if(count >= 0) {
+            answerArr.add(count);
+        }
         
-        // 3. 리스트 -> 배열 변환 
-        int[] answer = answerArr.stream()
-                                .mapToInt(Integer::intValue)
-                                .toArray();
+        int[] answer = new int[answerArr.size()];
+        for(int i = 0; i < answer.length; i++) {
+            answer[i] = answerArr.get(i);
+        }
         
         return answer;
     }
