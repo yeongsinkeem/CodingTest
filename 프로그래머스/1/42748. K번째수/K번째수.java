@@ -3,25 +3,22 @@ import java.util.*;
 class Solution {
     public int[] solution(int[] array, int[][] commands) {
         int[] answer = new int[commands.length];
-        int start = 0;
-        int end = 0;
-        int target = 0;
         
-        // 1. array 배열 분리
+        // 1. 기존 배열 자르기 
         for(int i = 0; i < commands.length; i++) {
-            start = commands[i][0]; // 2 
-            end = commands[i][1];
+            int start = commands[i][0];
+            int end = commands[i][1];
             
-            int[] splitted = Arrays.copyOfRange(array, start - 1, end);
+            // end - start + 1 = 4
+            int[] commArr = new int[end - start + 1];
+            for(int j = 0; j < end - start + 1 ; j++) {
+                commArr[j] = array[start - 1 + j];
+            }
+            Arrays.sort(commArr);
             
-            // 2. 정렬
-            Arrays.sort(splitted);
-            
-            // 3. 원소 정답 배열에 추가
-            target = commands[i][2] - 1;
-            answer[i] = splitted[target];
-            
+            answer[i] = commArr[commands[i][2] - 1];
         }
+        
         return answer;
     }
 }
