@@ -1,46 +1,41 @@
 import java.util.*;
 
 class Solution {
-    HashSet<Integer> numberSet = new HashSet<>();
-    
-    // 소수 판별 메소드
-    public boolean isPrime(int num) {
-        if(num < 2) {
-            return false;
-        }
-        for(int i = 2; i <= (int) Math.sqrt(num); i++) {
-            if(num % i == 0) return false;
-        }
-        return true;
-    }
-    
-    // DFS로 모든 숫자 조합 만들기 
-    public void DFS(String currentNum, char[] numbersArr, boolean[] visited) {
-        // 문자가 있다면 
-        if(!currentNum.equals("")) numberSet.add(Integer.parseInt(currentNum));
-        
-        for(int i = 0; i < numbersArr.length; i++) {
-            if(!visited[i]) {
-                visited[i] = true;
-                DFS(currentNum + numbersArr[i], numbersArr, visited);
-                visited[i] = false;
-            }
-        }
-    }
-    
+    HashSet<Integer> set = new HashSet<>();
     public int solution(String numbers) {
         int answer = 0;
         
-        char[] numbersArr = numbers.toCharArray();
-        boolean[] visited = new boolean[numbersArr.length];
+        // 1. "011" -> "0", "1", "1"
+        char[] numsArr = numbers.toCharArray();
+        boolean[] visited = new boolean[numsArr.length];
         
-        DFS("", numbersArr, visited);
+        DFS("", numsArr, visited);
         
-        for(int num : numberSet) {
+        for(int num : set) {
             if( isPrime(num) ) answer++;
         }
         
         return answer;
     }
- 
+    
+    public void DFS(String str, char[] arr, boolean[] visited){
+        if( !str.equals("") ) set.add(Integer.parseInt(str));
+        
+        for(int i = 0 ; i < arr.length; i++) {
+            if(!visited[i]) {
+                visited[i] = true;
+                DFS(str + arr[i], arr, visited);
+                visited[i] = false;
+            }
+        }
+    }
+    
+    public boolean isPrime(int n) {
+        if ( n < 2 ) return false;
+        
+        for(int i = 2; i <= (int)Math.sqrt(n); i++) {
+            if( n % i == 0 ) return false;
+        }
+        return true;
+    }
 }
