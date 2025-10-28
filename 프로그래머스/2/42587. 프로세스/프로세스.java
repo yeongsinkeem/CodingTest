@@ -1,49 +1,47 @@
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Collections;
+import java.util.*;
 
 class Solution {
-    class Process {
-        int idx;
-        int priority;
+    public class Process {
+        int num;
+        int value;
         
-        public Process(int idx, int priority) {
-            this.idx = idx;
-            this.priority = priority;
+        public Process(int num, int value) {
+            this.num = num;
+            this.value = value;
         }
     }
-    
     public int solution(int[] priorities, int location) {
         int answer = 0;
         
-        // 1. 초기화
+        // 1. queue, pq 만들기
         Queue<Process> queue = new LinkedList<>();
         PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
         
+        // 2. 요소 넣기 
         for(int i = 0; i < priorities.length; i++) {
-            queue.add(new Process(i, priorities[i]));
-            pq.add(priorities[i]);
+            queue.offer( new Process(i + 1, priorities[i]) );
+            pq.offer(priorities[i]);
         }
         
-        while(!queue.isEmpty()) {
-            Process now = queue.poll();
-            
-            // 2. 우선순위가 낮다면 
-            if(now.priority < pq.peek()) {
-                queue.add(now);
+        // 3. 조건 구현
+        while( !queue.isEmpty() ) {
+            Process process = queue.poll();
+            // 4. 만약 현재 우선순위보다 높은 프로세스가 있다면 
+            if( process.value < pq.peek() ) {
+                queue.offer(process);
             }
-            // 3. 우선순위가 높다면 
+            // 5. 현재 우선순위가 가장 높다면 
             else {
-                answer ++;
                 pq.poll();
+                answer ++;
                 
-                // 4. 목표 원소라면 
-                if(now.idx == location) {
+                // 6. 문제에 해당하는 답 찾기
+                if( process.num == location + 1) {
                     return answer;
-                }
+                }   
             }
         }
         return answer;
     }
+    
 }
