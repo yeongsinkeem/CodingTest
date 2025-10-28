@@ -2,25 +2,36 @@ import java.util.*;
 
 class Solution {
     public String solution(int[] numbers) {
-        // 1. 정수 -> Str 배열로 변환
-        String[] sArr = new String[numbers.length];
-        for(int i = 0; i < numbers.length; i++) {
-            sArr[i] = String.valueOf(numbers[i]);
+        String answer = "";
+        
+        // 1. int형을 넘을 수 있기 때문에 String으로 형변환
+        String[] numStrs = new String[numbers.length];
+        for(int i = 0; i < numStrs.length; i++) {
+            numStrs[i] = String.valueOf(numbers[i]);
         }
         
-        // 2. 정렬
-        // a + b, b + a 있을 때 더 큰 순서대로
-        Arrays.sort(sArr, (a, b) -> (b+a).compareTo(a+b));
+        // 2. Comparator 활용한 정렬
+        Arrays.sort(numStrs, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return (o2 + o1).compareTo(o1 + o2 );
+            }
+        });
         
-        // 3. 모든 문자열이 0인 경우 
-        if(sArr[0].equals("0")) return "0";
+        if( numStrs[0].equals("0") ) return "0";
         
-        StringBuilder answer = new StringBuilder();
-        for(String s : sArr) {
-            answer.append(s);
+        StringBuilder sb = new StringBuilder();
+        
+        for(String s : numStrs) {
+            sb.append(s);
         }
         
-        return answer.toString();
+        /*
+        if( Integer.parseInt(sb) == 0 ) {
+            return "0";
+        }
+        */
         
+        return sb.toString();
     }
 }
