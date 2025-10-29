@@ -30,12 +30,12 @@ class Solution {
     
     public ArrayList<String> makeMultiset(String str) {
         // 1. 소문자 변환
-        String s = str.toLowerCase();
+        str.toLowerCase();
         ArrayList<String> multiSet = new ArrayList<>();
         
-        for(int i = 0; i < s.length() - 1; i++) {
-            char a = s.charAt(i);
-            char b = s.charAt(i+1);
+        for(int i = 0; i < str.length() - 1; i++) {
+            char a = str.charAt(i);
+            char b = str.charAt(i+1);
             
             if( isAlphabet(a) && isAlphabet(b) ) {
                 multiSet.add(Character.toString(a) + Character.toString(b));
