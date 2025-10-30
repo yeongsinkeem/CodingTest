@@ -3,34 +3,25 @@ import java.util.*;
 class Solution {
     public String solution(int[] numbers) {
         String answer = "";
+        String[] numStr = new String[numbers.length];
         
-        // 1. int형을 넘을 수 있기 때문에 String으로 형변환
-        String[] numStrs = new String[numbers.length];
-        for(int i = 0; i < numStrs.length; i++) {
-            numStrs[i] = String.valueOf(numbers[i]);
+        // 1. 정수를 이어 붙여야 하기 때문에 String으로 형변환 
+        for(int i = 0; i < numbers.length; i++) {
+            numStr[i] = numbers[i] + "";
         }
         
-        // 2. Comparator 활용한 정렬
-        Arrays.sort(numStrs, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return (o2 + o1).compareTo(o1 + o2 );
-            }
-        });
+        // 2. 이어 붙여서 큰 순서대로 정렬 
+        Arrays.sort(numStr, (a, b) -> (b+a).compareTo(a+b));
         
-        if( numStrs[0].equals("0") ) return "0";
+        // 예외 처리 : 00000000000 -> 0으로 출력
+        if( numStr[0].equals("0") ) return "0";
         
+        // 3. StringBuilder 활용
         StringBuilder sb = new StringBuilder();
         
-        for(String s : numStrs) {
+        for(String s : numStr) {
             sb.append(s);
         }
-        
-        /*
-        if( Integer.parseInt(sb) == 0 ) {
-            return "0";
-        }
-        */
         
         return sb.toString();
     }
