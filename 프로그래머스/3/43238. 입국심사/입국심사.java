@@ -3,30 +3,33 @@ import java.util.*;
 class Solution {
     public long solution(int n, int[] times) {
         long answer = 0;
-        // 1. times 정렬
+        
+        // 1. 정렬
         Arrays.sort(times);
-        
         long min = 1;
-        long max = (long)times[times.length - 1] * n;
+        long max = (long) ( times[times.length - 1] * (long) n) ; // 최대로 걸리는 시간
         
-        while( min <= max ) {
+        while(min <= max) {
+            long mid = (long) ((min + max) / 2);
             long sum = 0;
-            long mid = (min + max) / 2;
-            // 2. mid 시간 동안 처리할 수 있는 인원 계산 
-            for(int time : times) {
-                sum += mid / time;
-                // 더이상 처리할 필요 x
-                if( sum >= n ) break;
+            
+            for(int t : times) {
+                // mid 시간 동안 심사관들이 처리하는 인원 수
+                sum += (long) (mid / t);
+                
+                if ( sum >= n ) break;
             }
             
-            // 3 - 1. 만약 해당 시간 내에 처리 x -> 시간 더 늘려야 함
-            if( sum < n ) {
-                min = mid + 1;
-            }
-            // 3 - 2. 해당 시간 내에 처리 o -> 더 적은 시간 탐색 
-            else {
+            // 2. n 시간 동안 전체 인원 처리 가능하다면 
+            // max 감소
+            if(n <= sum) {
+                max = mid - 1;
                 answer = mid;
-                max = answer - 1;
+            }
+            
+            // 3. n 시간 동안 처리 불가능하다면 
+            else {
+                min = mid + 1;
             }
         }
         
