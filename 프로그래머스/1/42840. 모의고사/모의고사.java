@@ -2,50 +2,49 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] answers) {
-        int n = answers.length;
+        int[] a = {1, 2, 3, 4, 5};                     // 5
+        int[] b = {2, 1, 2, 3, 2, 4, 2, 5};            // 8
+        int[] c = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};      // 10
         
-        // 1. 시험지 생성
-        int[] aTest = {1, 2, 3, 4, 5};
-        int[] aAnswer = new int[n];
-        for(int i = 0; i < n; i++) {
-            aAnswer[i] = aTest[i % 5];
+        ArrayList<Integer> aTest = new ArrayList<>();
+        ArrayList<Integer> bTest = new ArrayList<>();
+        ArrayList<Integer> cTest = new ArrayList<>();
+        
+        // 1. 시험지 생성 
+        for(int i = 0; i < answers.length; i++) {
+            aTest.add( a[ i % 5 ] );
+        }
+        for(int i = 0; i < answers.length; i++) {
+            bTest.add( b[ i % 8 ] );
+        }
+        for(int i = 0; i < answers.length; i++) {
+            cTest.add( c[ i % 10 ] );
         }
         
-        int[] bTest = {2, 1, 2, 3, 2, 4, 2, 5};
-        int[] bAnswer = new int[n];
-        for(int i = 0; i < n; i++) {
-            bAnswer[i] = bTest[i % 8];
-        }
-        
-        int[] cTest = {3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
-        int[] cAnswer = new int[n];
-        for(int i = 0; i < n; i++) {
-            cAnswer[i] = cTest[i % 10];
-        }
-        
-        // 2. 채점
+        // 2. 정답 채점
         int aScore = 0;
         int bScore = 0;
         int cScore = 0;
         
-        for(int i = 0; i < n; i++) {
-            if(aAnswer[i] == answers[i]) aScore++;
-            if(bAnswer[i] == answers[i]) bScore++;
-            if(cAnswer[i] == answers[i]) cScore++;
+        for(int i = 0; i < answers.length; i++) {
+            if(answers[i] == aTest.get(i)) aScore++;
+            if(answers[i] == bTest.get(i)) bScore++;
+            if(answers[i] == cTest.get(i)) cScore++;
         }
         
-        // 3. 최댓값
-        int maxScore = Math.max(aScore, Math.max(bScore, cScore));
+        // 3. 최고 득점자 리턴 
+        ArrayList<Integer> arr = new ArrayList<>();
+        int max = Math.max(aScore, Math.max(bScore, cScore));
         
-        ArrayList<Integer> lst = new ArrayList<>();
-        if(maxScore == aScore) lst.add(1);
-        if(maxScore == bScore) lst.add(2);
-        if(maxScore == cScore) lst.add(3);
+        if( max == aScore ) arr.add(1);
+        if( max == bScore ) arr.add(2);
+        if( max == cScore ) arr.add(3);
         
-        int[] answer = new int[lst.size()];
+        int[] answer = new int[arr.size()];
         for(int i = 0; i < answer.length; i++) {
-            answer[i] = lst.get(i);
+            answer[i] = arr.get(i);
         }
+        
         return answer;
     }
 }
