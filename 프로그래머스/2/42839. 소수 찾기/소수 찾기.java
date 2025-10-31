@@ -1,41 +1,54 @@
 import java.util.*;
 
 class Solution {
-    HashSet<Integer> set = new HashSet<>();
+    static char[] charArr;
+    static int count = 0;
+    static boolean[] visited;
+    static HashSet<Integer> set = new HashSet<>();
+    
     public int solution(String numbers) {
         int answer = 0;
         
-        // 1. "011" -> "0", "1", "1"
-        char[] numsArr = numbers.toCharArray();
-        boolean[] visited = new boolean[numsArr.length];
+        // 1. "17" -> { '1', '7' }
+        charArr = numbers.toCharArray();
         
-        DFS("", numsArr, visited);
+        visited = new boolean[charArr.length];
         
-        for(int num : set) {
-            if( isPrime(num) ) answer++;
+        // 2. DFS(현재 문자열, 문자열 배열, 방문 배열)
+        DFS("", charArr, visited);
+        
+        // 3. set 순회하면서 소수 판별
+        for(int a : set) {
+            if( isPrime(a) ) count++;
         }
         
-        return answer;
+        return count;
     }
     
-    public void DFS(String str, char[] arr, boolean[] visited){
-        if( !str.equals("") ) set.add(Integer.parseInt(str));
+    public void DFS(String s, char[] c, boolean[] v) {
+        // 1. 만들어진 숫자 추가
+        if( !s.equals("") )
+            set.add(Integer.parseInt(s));
         
-        for(int i = 0 ; i < arr.length; i++) {
-            if(!visited[i]) {
+        // 2. 반복문 동안 재귀 
+        for(int i = 0; i < c.length; i++) {
+            
+            if( !visited[i] ) {
                 visited[i] = true;
-                DFS(str + arr[i], arr, visited);
+                String newS = s + (c[i] + "");
+                DFS(newS, c, visited);
                 visited[i] = false;
             }
         }
     }
     
-    public boolean isPrime(int n) {
+    public boolean isPrime(int n) {      
         if ( n < 2 ) return false;
         
-        for(int i = 2; i <= (int)Math.sqrt(n); i++) {
+        for(int i = 2 ; i <= Math.sqrt(n); i++) {
             if( n % i == 0 ) return false;
         }
+        
         return true;
     }
 }
