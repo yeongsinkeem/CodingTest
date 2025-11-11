@@ -4,19 +4,20 @@ class Solution {
     public int solution(int[] people, int limit) {
         int answer = 0;
         
+        int left = 0;
+        int right = people.length - 1;
+        
         Arrays.sort(people);
         
-        int light = 0;
-        int heavy = people.length - 1;
-        
-        while(light <= heavy) {
-            answer ++;
-            
-            if(people[light] + people[heavy] <= limit) {
-                light ++;
+        while(left <= right) {
+            answer++;
+            if(people[left] + people[right] <= limit) {
+                left ++;
+                right --;
             }
-            
-            heavy --;
+            else {
+                right--;
+            }
         }
         return answer;
     }
