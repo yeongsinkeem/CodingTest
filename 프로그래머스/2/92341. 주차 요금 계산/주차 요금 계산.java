@@ -5,7 +5,6 @@ class Solution {
     public int[] solution(int[] fees, String[] records) {
         Map<String, Integer> timeMap = new HashMap<>();
         Map<String, String> inCar = new HashMap<>();
-        Map<String, String> outCar = new HashMap<>();
         
         // 1. records 순회하면서 번호와 누적시간 구하기 
         for(String rec : records) {
@@ -39,12 +38,22 @@ class Solution {
         int[] answer = new int[carFees.size()];
         
         // timeMap에 접근하여 요금 계산 
+        /*
         for(int i = 0; i < carFees.size(); i++) {
             String car = carFees.get(i);
             int totalTime = timeMap.get(car);
             
             int fee = calculatePrice(fees, totalTime);
             answer[i] = fee;
+        }
+        */
+        
+        int idx = 0;
+        for(String num : carFees) {
+            int totalMinutes = timeMap.get(num);
+            int price = calculatePrice(fees, totalMinutes);
+            answer[idx] = price;
+            idx++;
         }
         
         
