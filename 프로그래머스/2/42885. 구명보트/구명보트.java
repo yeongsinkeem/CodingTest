@@ -4,21 +4,21 @@ class Solution {
     public int solution(int[] people, int limit) {
         int answer = 0;
         
-        int left = 0;
-        int right = people.length - 1;
-        
+        // 1. 정렬
         Arrays.sort(people);
+        
+        int right = people.length - 1;
+        int left = 0;
         
         while(left <= right) {
             answer++;
-            if(people[left] + people[right] <= limit) {
-                left ++;
-                right --;
-            }
-            else {
-                right--;
-            }
+            
+            // 만약 둘 다 태울 수 있다면 
+            if( people[left] + people[right] <= limit ) left++;
+            
+            right--;
         }
+        
         return answer;
     }
 }
