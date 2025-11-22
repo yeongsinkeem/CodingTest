@@ -2,49 +2,49 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        ArrayList<Integer> answerArr = new ArrayList<>();
-        Queue<Integer> queue = new LinkedList<>();
+        List<Integer> answerLst = new ArrayList<>();
         
-        // 1. 작업 일수 큐 생성 
-        int[] left = new int[progresses.length];
-        int days = 0;
+        // 1. progresses - speeds 순회하면서 days 배열 만들기
+        int[] days = new int[progresses.length];
         
-        for(int i = 0; i < left.length; i++) {
-            int mod = (100 - progresses[i]) % speeds[i];
-            if( mod != 0 ) {
-                days = (100 - progresses[i]) / speeds[i] + 1;
-            }
-            else {
-                days = (100 - progresses[i]) / speeds[i];
-            }
-            queue.add(days);
+        // 2. 날짜 계산
+        for(int i = 0; i < progresses.length ; i++) {
+            // 나머지가 있다면 -> 올림 
+            int timeLeft = (100 - progresses[i]) / speeds[i];
+            
+            if( (100 - progresses[i]) % speeds[i] != 0 ) timeLeft ++;
+
+            days[i] = timeLeft;
         }
         
-        int count = 1;
-        // 2. 큐 활용
-        // 꺼낸 원소보다 작거나 같 vs 큰지 ?
-        int n = queue.poll();
-        while(!queue.isEmpty()) {
-            if( n >= queue.peek() ) {
-                count ++;
-                queue.poll();
+        // 3. Queue 준비
+        Queue<Integer> q = new LinkedList<>();
+        
+        // 4. days 순회하면서 현재 요소가 q보다 작거나 같으면 q에 넣기
+        for(int d : days) {
+            if( q.isEmpty() || d <= q.peek() ) {
+                q.offer(d);
             }
-            else {
-                answerArr.add(count);
-                count = 1;
-                n = queue.poll();
+            
+            // 현재 요소가 q보다 크다면 -> 배포해야 함 
+            else if( q.peek() < d ) {
+                answerLst.add(q.size());
+                q.clear();
+                q.offer(d);
             }
         }
         
-        if(count >= 0) {
-            answerArr.add(count);
+        // 5. 큐가 비어있지 않다면 
+        if( !q.isEmpty() ) {
+            answerLst.add(q.size());
         }
         
-        int[] answer = new int[answerArr.size()];
+        // 6. list -> 배열로 변환
+        int[] answer = new int[answerLst.size()];
         for(int i = 0; i < answer.length; i++) {
-            answer[i] = answerArr.get(i);
+            answer[i] = answerLst.get(i);
         }
-        
+
         return answer;
     }
 }
