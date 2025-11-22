@@ -3,56 +3,34 @@ import java.util.*;
 class Solution {
     public int solution(int bridge_length, int weight, int[] truck_weights) {
         int answer = 0;
-        // 1. 다리 큐
-        Queue<Integer> bridgeQ = new LinkedList<>();
+        
+        // 1. bridge_length 만큼 0으로 된 큐 만들기
+        Queue<Integer> q = new LinkedList<>();
         for(int i = 0; i < bridge_length; i++) {
-            bridgeQ.offer(0);
+            q.offer(0);
         }
         
-        // 2. 대기 큐
-        Queue<Integer> waitQ = new LinkedList<>();
-        for(int i = 0; i < truck_weights.length; i++) {
-            waitQ.offer(truck_weights[i]);
-        }
-        
-        // 3. 초기 설정 
-        int completed = 0;
-        int time = 0;
-        int sum = 0;
-        
-        // 3. 모든 트럭이 다 지나갈 때까지
-        while(completed < truck_weights.length) {
-            time ++;
+        int idx = 0;
+        int currWeights = 0;
+        // 2. 트럭이 다 올라갈 때까지 
+        while ( idx < truck_weights.length ) {
+            answer += 1;
             
-            // 4. 트럭(혹은 0) 나옴
-            int item = bridgeQ.poll();
+            int exited = q.poll();
+            currWeights -= exited;
             
-            // 5. 실제 나온게 트럭이라면
-            if(item != 0) {
-                sum -= item;
-                completed++;
+            // 3. 새로운 트럭 올릴 수 있다면 
+            if( currWeights + truck_weights[idx] <= weight ) {
+                q.offer(truck_weights[idx]);
+                currWeights += truck_weights[idx];
+                idx += 1;
             }
             
-            // 6. 트럭 다리에 올리기
-            if( !waitQ.isEmpty() ) {
-                // 7. 다리에 올라갈 수 있는 경우
-                if( sum + waitQ.peek() <= weight ) {
-                    int leaving = waitQ.poll();
-                    sum += leaving;
-                    bridgeQ.offer(leaving);
-                } 
-                
-                // 8. 다리에 올라갈 수 없는 경우 
-                else {
-                    bridgeQ.offer(0);
-                }
-            } 
-            // 대기 트럭이 없어도 트럭은 다리 지나가야 함
             else {
-                bridgeQ.offer(0);
+                q.offer(0);
             }
         }
         
-        return time;
+        return answer + bridge_length;
     }
 }
