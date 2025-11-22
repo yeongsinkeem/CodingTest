@@ -10,15 +10,12 @@ class Solution {
         int right = people.length - 1;
         int left = 0;
         
-        while(left <= right) {
-            answer++;
+        while( left <= right ) {
+            answer ++;
             
-            // 만약 둘 다 태울 수 있다면 
-            if( people[left] + people[right] <= limit ) left++;
-            
-            right--;
+            if( people[right] + people[left] <= limit ) left ++;
+            right --;
         }
-        
         return answer;
     }
 }
