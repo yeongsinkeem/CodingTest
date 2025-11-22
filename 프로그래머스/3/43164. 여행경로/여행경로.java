@@ -1,35 +1,39 @@
 import java.util.*;
 
 class Solution {
-    Map<String, PriorityQueue<String>> adj = new HashMap<>();
-    ArrayList<String> lst = new ArrayList<>();
+    Map<String, PriorityQueue<String>> map;
+    ArrayList<String> answerLst;
     
     public String[] solution(String[][] tickets) {
+        String[] answer = {};
+        answerLst = new ArrayList<>();
         
-        // 1. 인접 연결리스트 생성 
-        for(String[] t : tickets) {
-            adj.putIfAbsent(t[0], new PriorityQueue<>());
-            adj.get(t[0]).add(t[1]);
+        // 1. 인접 연결 리스트 생성 및 초기화 -> HashMap
+        map = new HashMap<>();
+    
+        for(String[] ticket : tickets) {
+            String start = ticket[0];
+            String end = ticket[1];
+            
+            map.putIfAbsent(start, new PriorityQueue<>());
+            map.get(start).add(end);
         }
         
-        // 2. DFS 시작
-        dfs("ICN");
+        DFS("ICN");
+        Collections.reverse(answerLst);
         
-        // 3. lst 거꾸로 !!!!!!!!
-        Collections.reverse(lst);
-        
-        return lst.toArray(new String[0]);
+        return answerLst.toArray(new String[0]);
     }
     
-    public void dfs(String start) {
-        // 1. start에서 연결된 도착지점들 가져오기
-        PriorityQueue<String> arrivals = adj.get(start);
+    public void DFS(String s) {
+        PriorityQueue<String> pq = map.get(s);
         
-        // 2. 도착지점들이 있어야 재귀
-        while( arrivals != null && !arrivals.isEmpty() ) {
-            dfs( arrivals.poll() );
+        while( pq != null && !pq.isEmpty() ) {
+            DFS(pq.poll());
         }
         
-        lst.add(start);
+        // 연결되지 않은 s 먼저 추가됨
+        // 종점부터 추가된다는 뜻
+        answerLst.add(s);
     }
 }
