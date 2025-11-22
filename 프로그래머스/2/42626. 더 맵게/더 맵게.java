@@ -2,25 +2,26 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] scoville, int K) {
-        int answer = 0;
+        int count = 0;
         
-        // 1. pq 생성
+        // 1. 계속 정렬이 일어나야 함 -> minHeap
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        for(int i = 0; i < scoville.length; i++) {
-            pq.offer(scoville[i]);
+        for(int s : scoville) {
+            pq.offer(s);
         }
         
-        // 2. pq 준비
-        while( pq.size() > 1 && pq.peek() < K) {
-            int a = pq.poll();
-            int b = pq.poll();
+        // 2. 스코빌 지수 만들기
+        while( pq.size() >= 2 && pq.peek() < K ) {
+            count++;
+            int first = pq.poll();
+            int second = pq.poll();
             
-            int newScoville = a + (b * 2);
-            answer++;
-            
-            pq.offer(newScoville);
+            int mixed = first + (second * 2);
+            pq.offer(mixed);
         }
         
-        return pq.peek() < K ? -1 : answer;
+        if( pq.peek() < K ) return -1;
+        
+        return count;
     }
 }
