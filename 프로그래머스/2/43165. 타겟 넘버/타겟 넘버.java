@@ -1,27 +1,26 @@
 class Solution {
+    int currSum = 0;
+    int answer = 0;
+    int target = 0;
     int[] numbers;
-    int target;
-    int answer;
     
     public int solution(int[] numbers, int target) {
-        this.numbers = numbers;
         this.target = target;
+        this.numbers = numbers;
         
-        answer = 0;
-        
-        DFS(0, 0, numbers);
-        
+        DFS(currSum, 0);
         return answer;
     }
     
-    public void DFS(int depth, int sum, int[] num) {
-        
-        if(depth == numbers.length) {
-            if(sum == target) answer++;
+    public void DFS(int sum, int depth) {
+        if( depth == numbers.length ) {
+            if( sum == target ) {
+                answer++;
+            }
             return;
         }
         
-        DFS(depth + 1, sum + num[depth], num);
-        DFS(depth + 1, sum - num[depth], num);
+        DFS(sum + numbers[depth], depth + 1);
+        DFS(sum - numbers[depth], depth + 1);
     }
 }
