@@ -2,24 +2,17 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] nums) {
-        int answer = 0;
-        
-        // 1. HashMap에 각 카드의 종류와 개수 저장
+        // int answer = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        for(int i = 0; i < nums.length; i++) {
-            // map.put(key, value)
-            map.put(nums[i], map.getOrDefault(nums[i], 0) + 1 );
+        
+        for(int n : nums) {
+            map.put(n, map.getOrDefault(n, 0) + 1);
         }
         
-        // 2. 폰켓몬 수 출력
-        // 카드가 다양하지 않다면 
-        if( map.size() <= (nums.length) / 2 ) {
-            return map.size();
-        }
+        int halfN = nums.length / 2;
         
-        // 카드가 다양하다면 
-        else {
-            return nums.length / 2;
-        }
+        // 종류가 더 작다면 
+        if( map.size() < halfN ) return map.size();
+        return halfN;
     }
 }
