@@ -3,32 +3,27 @@ import java.util.*;
 class Solution {
     public String solution(String number, int k) {
         String answer = "";
-        Stack<Character> stack = new Stack<>();
+        Stack<Character> s = new Stack<>();
         
-        for(char c : number.toCharArray()) {
-            // stack.peek() < c -> stack.pop -> stack.push(c)
-            while( k > 0 && !stack.isEmpty() && stack.peek() < c ) {
-                stack.pop();
+        for(char c : number.toCharArray() ) {
+            while( k > 0 && !s.isEmpty() && s.peek() < c ) {
                 k--;
+                s.pop();
             }
-            stack.push(c);
+            s.push(c);
         }
         
-        // k 개의 수 다 제거하지 않았을 때 
         if( k > 0 ) {
             for(int i = 0; i < k; i++) {
-                stack.pop();
+                s.pop();
             }
         }
-        
-        // stack = FILO
-        // 그치만 순서 자체는 FIFO임 !
+    
         StringBuilder sb = new StringBuilder();
-        for(char c : stack) {
+        for(char c : s) {
             sb.append(c);
         }
         
-        answer = sb.toString();
-        return answer;
+        return sb.toString();
     }
 }
