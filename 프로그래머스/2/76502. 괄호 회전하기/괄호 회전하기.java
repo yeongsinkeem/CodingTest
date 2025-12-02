@@ -31,8 +31,9 @@ class Solution {
         return answer;
     }
     
-    // 올바른 괄호 문자열인지 아닌지 판단하는 함수 
+    // 올바른 괄호 문자열인지 아닌지 판단
     public boolean isCorrect(String s) {
+        
         Stack<Character> openS = new Stack<>();
         char[] charArr = s.toCharArray();
         
@@ -53,7 +54,6 @@ class Solution {
                 }
             }
         }
-        
         
         if( openS.size() > 0 ) return false;
         
