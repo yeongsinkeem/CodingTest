@@ -1,66 +1,56 @@
 import java.util.*;
 
 class Solution {
-    public class Word {
-        String name;
-        int depth;
+    class word {
+        private String name;
+        private int level;
         
-        public Word(String name, int depth) {
+        public word(String name, int level) {
             this.name = name;
-            this.depth = depth;
+            this.level = level;
         }
     }
-    
     public int solution(String begin, String target, String[] words) {
-        int answer = 0;
-        
-        // 1. words에는 target이 존재해야 함 
-        boolean exit = false;
-        for(String s : words) {
-            if( s.equals(target) ) exit = true;
-        }
-        if( exit == false ) return 0;
-        
-        // 2. BFS 시작 전 큐와, 방문 배열 준비
-        Queue<Word> queue = new LinkedList<>();
         boolean[] visited = new boolean[words.length];
+        Queue<word> q = new LinkedList<>();
         
-        queue.offer(new Word(begin, 0));
+        // 1. words에 target 없으면 0 반환
+        List<String> wordsLst = new ArrayList<>();
+        for(String w : words) {
+            wordsLst.add(w);
+        }
+        if( !wordsLst.contains(target) ) return 0;
         
-        // 3. BFS 시작
-        while( !queue.isEmpty() ) {
-            Word currWord = queue.poll();
+        q.offer(new word(begin, 0));
+        // 2. BFS 시작
+        while( !q.isEmpty() ) {
+            word currWord = q.poll();
             String currName = currWord.name;
-            int currDepth = currWord.depth;
+            int currLevel = currWord.level;
             
-            // 4. 만약 현재 단어가 target이라면 종료 
-            if ( currName.equals(target) ) {
-                // currDepth++;
-                return currDepth;
-            }
+            if( currName.equals(target) ) return currLevel;
             
-            // 5. words 순회하면서 단어 변환
             for(int i = 0; i < words.length; i++) {
-                // 미방문 + 한번만에 갈 수 있는지 
-                if( !visited[i] && isOnce(currName, words[i]) ) {
+                // 3. 한글자만 다르고 미방문이라면 
+                if( isDiff(words[i], currName) && !visited[i] ) {
+                    q.offer(new word(words[i], currLevel + 1));
                     visited[i] = true;
-                    queue.offer(new Word(words[i], currDepth + 1));
                 }
             }
         }
-    
-        return answer;
+        
+        return 0;
     }
     
-    public boolean isOnce(String a, String b) {
-        int diff = 0;
-        char[] aArr = a.toCharArray();
-        char[] bArr = b.toCharArray();
+    // 한글자만 다르면 true
+    // 아예 다르면 false
+    public boolean isDiff(String a, String b) {
+        int cnt = 0;
         
         for(int i = 0; i < a.length(); i++) {
-            if( aArr[i] != bArr[i] ) diff++;
+            if( a.charAt(i) != b.charAt(i) ) cnt ++;
             
-            if(diff > 1) return false;
+            if( cnt > 1 ) return false;
         }
         
         return true;
