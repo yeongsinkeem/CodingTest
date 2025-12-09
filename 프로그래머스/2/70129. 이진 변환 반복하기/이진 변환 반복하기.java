@@ -14,48 +14,26 @@ class Solution {
         int round = 0;
         
         while( !s.equals("1") ) {
-            String newS = "";
             round += 1;
+            int oneCnt = 0;
             
             // 1. 0 없애기 
             for(int i = 0; i < s.length(); i++) {
                 if( s.charAt(i) == '1' ) {
-                    newS += s.charAt(i) + "";
+                    oneCnt += 1;
                 }
                 else {
                     zeroCnt += 1;
                 }
             }
             
-            // 2. 제거 후 길이 구하기 
-            int newSLen = newS.length();
-            
-            // 3. 이진수로 변환 
-            s = toBinary(newSLen);
+            // 2. 이진수로 변환 
+            s = Integer.toBinaryString(oneCnt);
         }
         
         answer[0] = round;
         answer[1] = zeroCnt;
         
         return answer;
-    }
-    
-    public String toBinary(int a) {
-        Stack<Integer> stack = new Stack<>();
-        String binaryS = "";
-        
-        // 몫이 1보다 크거나 같을 때까지만 수행 
-        while( a > 1 ) {
-            stack.push( a % 2 );
-            a = a / 2;
-        }
-        
-        stack.push(a);
-        
-        while( !stack.isEmpty() ) {
-            binaryS += stack.pop() + "";
-        }
-        
-        return binaryS;
     }
 }
