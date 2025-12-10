@@ -1,23 +1,28 @@
+import java.util.*;
+
 class Solution {
     public int[] solution(int[] prices) {
         int[] answer = new int[prices.length];
         
-        int count = 1;
-        for(int i = 0; i < prices.length; i++) {
-            for(int j = i + 1; j < prices.length - 1; j++) {
-                // 가격이 떨어진 경우
-                if(prices[i] > prices[j]) {
-                    answer[i] = count;
-                    break;
-                }
-                count = count + 1;
+        // 1. 큐에 요소 넣기
+        Queue<Integer> q = new LinkedList<>();
+        for(int p : prices) {
+            q.offer(p);
+        }
+        
+        int idx = 0;
+        while( !q.isEmpty() ) {
+            int seconds = 0;
+            int element = q.poll();
+            
+            for(int a : q) {
+                seconds++;
+                // 가격이 떨어졌다면 
+                if( a < element ) break;
             }
-            if( i == prices.length - 1 ) {
-                answer[i] = 0;
-                break;
-            }
-            answer[i] = count;
-            count = 1;
+            
+            answer[idx] = seconds;
+            idx++;
         }
         return answer;
     }
