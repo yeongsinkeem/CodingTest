@@ -1,39 +1,44 @@
 import java.util.*;
 
 class Solution {
-    Map<String, PriorityQueue<String>> map;
-    ArrayList<String> answerLst;
+    static HashMap<String, PriorityQueue<String>> map;
+    static ArrayList<String> answerLst = new ArrayList<>();
     
     public String[] solution(String[][] tickets) {
-        String[] answer = {};
-        answerLst = new ArrayList<>();
-        
-        // 1. 인접 연결 리스트 생성 및 초기화 -> HashMap
         map = new HashMap<>();
-    
+        
+        // 1. 인접 연결 큐 생성 
         for(String[] ticket : tickets) {
-            String start = ticket[0];
-            String end = ticket[1];
+            String from = ticket[0];
+            String to = ticket[1];
             
-            map.putIfAbsent(start, new PriorityQueue<>());
-            map.get(start).add(end);
+            // 없으면 큐 생성 
+            map.putIfAbsent(from, new PriorityQueue<>());
+            map.get(from).offer(to);
         }
         
+        // 2. 인천부터 시작 
         DFS("ICN");
+        
         Collections.reverse(answerLst);
         
-        return answerLst.toArray(new String[0]);
+        String[] answer = new String[answerLst.size()];
+        for(int i = 0; i < answer.length; i++) {
+            answer[i] = answerLst.get(i);
+        }
+     
+        return answer;
     }
     
-    public void DFS(String s) {
-        PriorityQueue<String> pq = map.get(s);
+    public void DFS(String start) {
         
-        while( pq != null && !pq.isEmpty() ) {
-            DFS(pq.poll());
+        // 출발지여야 하고 비어있지 않아야 
+        while( map.containsKey(start) && !map.get(start).isEmpty() ) {
+            String next = map.get(start).poll();
+            DFS(next);
         }
         
-        // 연결되지 않은 s 먼저 추가됨
-        // 종점부터 추가된다는 뜻
-        answerLst.add(s);
+        // 마지막 공항부터 기록 
+        answerLst.add(start);
     }
 }
