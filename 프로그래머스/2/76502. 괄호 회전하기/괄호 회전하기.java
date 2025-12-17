@@ -1,62 +1,55 @@
 import java.util.*;
 
 class Solution {
-    Queue<Character> q;
-    
     public int solution(String s) {
         int answer = 0;
-        String newS = "";
         
-        // 1. Queue 만들기
-        q = new LinkedList<>();
+        int len = s.length();
+        Queue<Character> q = new LinkedList<>();
+        
         for(char c : s.toCharArray()) {
             q.offer(c);
         }
         
-        // 2. s를 왼쪽으로 x칸만큼 회전하기
-        for(int i = 0; i < s.length(); i++) {
-            
-            // 3. 현재 큐의 상태를 문자열로 만들기
-            String curr = "";
+        for(int i = 0; i < len; i++) {
+            // 1. i번째 큐에 대해서 
+            String now = "";
             for(char c : q) {
-                curr += c + "";
+                now += c + "";
             }
             
-            if( isCorrect(curr) ) answer++;
+            // 2. 올바른 괄호인지 확인
+            if( isCorrect(now) ) answer++;
             
-            // 4. 큐 업데이트 
-            q.offer(q.poll());
+            char firstC = q.poll();
+            q.offer(firstC);
         }
-        
         return answer;
     }
     
-    // 올바른 괄호 문자열인지 아닌지 판단
     public boolean isCorrect(String s) {
+        Stack<Character> stack = new Stack<>();
         
-        Stack<Character> openS = new Stack<>();
-        char[] charArr = s.toCharArray();
-        
-        // 첫 요소가 바로 닫힌 괄호 -> X 
-        if( charArr[0] == ']' || charArr[0] == ')' || charArr[0] == '}' ) return false;
-        
-        for(char c : charArr) {
-            if( c == '(' || c == '{' || c == '[' ) {
-                openS.push(c);
+        // 1. 열린 괄호라면 스택에 넣기 
+        for(char c : s.toCharArray()) {
+            if( c == '(' || c == '{' || c == '[') {
+                stack.push(c);
             }
             
-            else if( !openS.isEmpty() ) {
-                char preChar = openS.peek();
-                
-                // 만약 짝이 맞다면 -> 스택에서 꺼내주기 
-                if( c - preChar <= 2 ) {
-                    openS.pop();
-                }
+            // 2. 같은 종류의 괄호일 것 
+            else if( !stack.isEmpty() && c - stack.peek() <= 2 ) {
+                stack.pop();
+            }
+            
+            // 3. 만약 첫 요소가 닫힌 괄호라면 X
+            else if( stack.isEmpty() && (c == ')' || c == '}' || c == ']' ) ) {
+                return false;
             }
         }
         
-        if( openS.size() > 0 ) return false;
+        if( stack.isEmpty() ) return true;
         
-        return true;
+        return false;
     }
+
 }
