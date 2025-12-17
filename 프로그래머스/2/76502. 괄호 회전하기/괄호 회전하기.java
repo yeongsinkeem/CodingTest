@@ -13,13 +13,14 @@ class Solution {
         
         for(int i = 0; i < len; i++) {
             // 1. i번째 큐에 대해서 
-            String now = "";
+            StringBuilder now = new StringBuilder();
             for(char c : q) {
-                now += c + "";
+                now.append(c + "");
             }
             
             // 2. 올바른 괄호인지 확인
-            if( isCorrect(now) ) answer++;
+            String nowS = now.toString();
+            if( isCorrect(nowS) ) answer++;
             
             char firstC = q.poll();
             q.offer(firstC);
