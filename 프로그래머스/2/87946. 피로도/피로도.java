@@ -5,24 +5,21 @@ class Solution {
         boolean[] v = new boolean[dungeons.length];
         
         // DFS 시작
-        DFS(k, v, 0, 0, dungeons);
+        DFS(k, v, 0, dungeons);
         
         return maxCnt;
     }
     
     // 현재 체력, 방문배열, 현재 노드 깊이, 던전 몇 개 ? 
-    public void DFS(int curr, boolean[] v, int level, int cnt, int[][] dungeons) {
-        // 종료 조건 (현재 던전이 최대 던전보다 크거나 같을 경우) 
-        if( maxCnt <= cnt ) {
-            maxCnt = cnt;
-        }
+    public void DFS(int curr, boolean[] v, int cnt, int[][] dungeons) {
+        maxCnt = Math.max(maxCnt, cnt);
         
         // 1. 던전 DFS
         for(int i = 0; i < dungeons.length; i++) {
             // 2. 미방문 던전 && 최소 피로도 충족에 대해서 DFS
             if( !v[i] && curr >= dungeons[i][0] ) {
                 v[i] = true;
-                DFS(curr - dungeons[i][1], v, level + 1, cnt + 1, dungeons);
+                DFS(curr - dungeons[i][1], v, cnt + 1, dungeons);
                 v[i] = false;
             }
         }
