@@ -1,45 +1,30 @@
 class Solution {
-    boolean[] visited;
-    int[][] dungeons;
-    int count;
-    int maxCount = 0;
-    int k;
+    static int maxCnt = 0;
     
     public int solution(int k, int[][] dungeons) {
-        int answer = -1;
-        this.dungeons = dungeons;
-        this.k = k;
-        visited = new boolean[dungeons.length];
+        boolean[] v = new boolean[dungeons.length];
         
-        // 1. DFS 시작
-        DFS(visited, 0);
+        // DFS 시작
+        DFS(k, v, 0, 0, dungeons);
         
-        return maxCount;
+        return maxCnt;
     }
     
-    public void DFS(boolean[] v, int count) {
-        //  1. 종료조건
-        if(maxCount <= count) {
-            maxCount = count;
+    // 현재 체력, 방문배열, 현재 노드 깊이, 던전 몇 개 ? 
+    public void DFS(int curr, boolean[] v, int level, int cnt, int[][] dungeons) {
+        // 종료 조건 (현재 던전이 최대 던전보다 크거나 같을 경우) 
+        if( maxCnt <= cnt ) {
+            maxCnt = cnt;
         }
         
-        // 2. 미방문 노드 && 체력 조건 충족 
-        // 반복문 동안 재귀 
+        // 1. 던전 DFS
         for(int i = 0; i < dungeons.length; i++) {
-            if( !v[i] && check(k, dungeons[i][0]) ) {
-                k -= dungeons[i][1];
+            // 2. 미방문 던전 && 최소 피로도 충족에 대해서 DFS
+            if( !v[i] && curr >= dungeons[i][0] ) {
                 v[i] = true;
-                
-                DFS(v, count + 1);
-                
+                DFS(curr - dungeons[i][1], v, level + 1, cnt + 1, dungeons);
                 v[i] = false;
-                k += dungeons[i][1];
             }
         }
-    }
-    
-    public boolean check(int a, int b) {
-        if( a >= b ) return true;
-        else return false;
     }
 }
