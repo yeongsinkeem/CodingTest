@@ -1,73 +1,59 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 class Solution {
-    public class Genre {
-        String type;
+    class Song {
+        int id;
         int play;
-        Map<Integer, Integer> map = new HashMap<>();
         
-        public Genre(String type) {
-            this.type = type;
-            this.play = 0;
-            this.map = new HashMap<>();
-        }
-        
-        public void addSong(int idx, int cnt) {
-            // 장르 총 재생 수 누적
-            this.play += cnt;
-            // <고유 번호, 재생 수> 추가
-            this.map.put(idx, cnt);
+        public Song (int id, int play) {
+            this.id = id;
+            this.play = play;
         }
     }
-    
     public int[] solution(String[] genres, int[] plays) {
-        int[] answer = {};
+        List<Integer> answerLst = new ArrayList<>();
         
-        // 1. 장르별로 hashMap 생성
-        Map<String, Genre> genreMap = new HashMap<>();
-        
-        // 2. 장르맵에 장르 정의해서 넣기 -> { classic : classic, 1450, [3:800, 0:500, ..] }
+        // 1. 장르 hashMap 생성 
+        // ex. classic : 1450, pop : 3100
+        Map<String, Integer> genreMap = new HashMap<>();
         for(int i = 0; i < genres.length; i++) {
-            String genreName = genres[i];
-            
-            // 장르별 총 재생 수와, 고유 곡들 저장 
-            Genre current = genreMap.getOrDefault(genreName, new Genre(genreName));
-            current.addSong(i, plays[i]);
-            
-            genreMap.put(genreName, current);
+            genreMap.put(genres[i], genreMap.getOrDefault(genres[i], 0) + plays[i]);
         }
         
-        // 3. 총 재생수 기준으로 genreMap 정렬
-        // 장르맵 안의 값을 꺼내야 함 List 형식으로
-        // 그래야 정렬 가능하기 때문
-        // pop, classic 순서로 정렬됨
-        List<Genre> genreList = new ArrayList<>(genreMap.values());
-        genreList.sort((g1, g2) -> g2.play - g1.play);
+        // 2. 노래 hashMap 생성
+        // ex. { classic : [0, 500], [2, 800], .. }
+        Map<String, List<Song>> songMap = new HashMap<>();
+        for(int i = 0; i < genres.length; i++) {
+
+            songMap.computeIfAbsent(genres[i], k -> new ArrayList<>())
+                   .add(new Song(i, plays[i]));
+        }
         
-        // 4. 각 장르별로 정렬
-        List<Integer> answerList = new ArrayList<>();
-        for(Genre genre: genreList) {
-            // 4-1. <고유번호, 재생수> 리스트 생성 
-            List<Map.Entry<Integer, Integer>> songList = new ArrayList<>(genre.map.entrySet());
+        // 3. genreMap 정렬
+        List<String> sortedGenres = new ArrayList<>(genreMap.keySet());
+        sortedGenres.sort( (a, b) -> genreMap.get(b) - genreMap.get(a));
+        
+        // 4. 장르 내 노래들 정렬
+        for(String g : sortedGenres) {
+            List<Song> songs = songMap.get(g);
+            songs.sort( (a, b) -> {
+                // 재생수 같으면 idx
+                if( a.play == b.play ) return a.id - b.id;
+                return b.play - a.play;
+            });
             
-            List<Map.Entry<Integer, Integer>> sortedSongList = songList.stream()
-                .sorted((s1, s2) -> {
-                    if(s1.getValue().equals(s2.getValue())) return s1.getKey() - s2.getKey();
-                    
-                    return s2.getValue() - s1.getValue();
-                })
-                .collect(Collectors.toList());
-            
-            // 5. 두 개의 장르에 대해 1, 2위 정답에 추가 
-            answerList.add(sortedSongList.get(0).getKey());
-            
-            if (sortedSongList.size() > 1) {
-                answerList.add(sortedSongList.get(1).getKey());
+            // 최대 2개씩만 출력 
+            // 각 장르에 해당하는 노래들
+            for(int i = 0; i < Math.min(songs.size(), 2); i++) {
+                answerLst.add(songs.get(i).id);
             }
         }
-        return answerList.stream()
-                         .mapToInt(i -> i)
-                         .toArray();
+        
+        int[] answer = new int[answerLst.size()];
+        for(int i = 0; i < answer.length; i++) {
+            answer[i] = answerLst.get(i);
+        }
+        
+        return answer;
     }
 }
