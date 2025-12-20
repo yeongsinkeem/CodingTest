@@ -1,43 +1,52 @@
 import java.util.*;
 
 class Solution {
+    class Process{
+        int idx;
+        int t1;
+        int t2;
+        
+        public Process(int idx, int t1, int t2) {
+            this.idx = idx;
+            this.t1 = t1;
+            this.t2 = t2;
+        }
+    }
+    
     public int solution(int[][] jobs) {
         int answer = 0;
         
-        // 1. jobs 정렬 
-        Arrays.sort(jobs, (a, b) -> a[0] - b[0]);
+        Arrays.sort(jobs, Comparator.comparingInt( a -> a[0]));
         
-        // 2. 우선순위 큐 생성
-        PriorityQueue<int []> pq = new PriorityQueue<>( (a, b) -> a[1] - b[1] );
+        // 1. 우선순위 큐 생성
+        PriorityQueue<Process> pq = new PriorityQueue<>(
+            Comparator.comparingInt( (Process p) -> p.t2)
+                      .thenComparingInt(p -> p.idx)
+        );
         
-        // 3. 변수 초기화 
-        int processCnt = 0;
-        int jobIdx = 0;
-        int totalAroundTime = 0;
-        int currTime = 0;
+        int sum = 0;
+        int seconds = 0;
+        int idx = 0;
         
-        while( processCnt < jobs.length ) {
-            // 4. 현재 시간 이전까지의 작업들 넣기 (초기 설정)
-            while( jobIdx < jobs.length && jobs[jobIdx][0] <= currTime ) {
-                pq.offer(jobs[jobIdx]);
-                jobIdx++;
+        while( idx < jobs.length || !pq.isEmpty() ) {
+            // 2. 현재 시간까지 도착한 작업들 대기 큐에 삽입 
+            while( idx < jobs.length && jobs[idx][0] <= seconds ) {
+                pq.offer(new Process(idx, jobs[idx][0], jobs[idx][1]));
+                idx++;
             }
             
-            // 5. 큐가 비지 않았다면, 즉 작업 계속 할 수 있다면 
-            if( !pq.isEmpty() ) {
-                // 타임 리프 -> 시간 계산 -> processCnt 증가
-                int[] curr = pq.poll();
-                currTime += curr[1];
-                totalAroundTime += currTime - curr[0];
-                processCnt ++;
+            // 3. 대기 큐에 작업이 없다면 시간 점프 
+            if( pq.isEmpty() ) {
+                seconds = jobs[idx][0];
+                continue;
             }
             
-            // 6. 큐가 비었다면 
-            else {
-                // 타임 건너뛰기
-                currTime = jobs[jobIdx][0];
-            }
+            // 4. 시간 계산 
+            Process p = pq.poll();
+            seconds += p.t2;
+            sum += seconds - p.t1;
         }
-        return totalAroundTime / jobs.length;
+        
+        return sum / jobs.length;
     }
 }
