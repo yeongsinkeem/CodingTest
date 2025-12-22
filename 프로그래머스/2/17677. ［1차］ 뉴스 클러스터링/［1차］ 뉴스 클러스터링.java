@@ -2,50 +2,62 @@ import java.util.*;
 
 class Solution {
     public int solution(String str1, String str2) {
+        int answer = 0;
         
-        // 1. 다중집합 만들기
-        ArrayList<String> m1 = makeMultiset(str1);
-        ArrayList<String> m2 = makeMultiset(str2);
+        // 1. 두 글자씩 끊어서 다중 원소 만들기 
+        // 이때 특수 문자가 있는 다중 원소는 버리기
+        // 모두 대문자로 만들기 
+        List<String> str1Lst = new ArrayList<>();
+        List<String> str2Lst = new ArrayList<>();
         
-        // 2. 두 리스트 원본 크기
-        int m1Size = m1.size();
-        int m2Size = m2.size();
+        str1 = str1.toUpperCase();
+        str2 = str2.toUpperCase();
         
-        // 3. 교집합 
-        int intersection = 0;
-        for(String s : m1) {
-            if( m2.remove(s) ) intersection++;
+        for(int i = 0; i < str1.length() - 1; i++) {
+            String s = str1.substring(i, i+2);
+            
+            if( alphabetic(s) ) str1Lst.add(s);
         }
         
-        // 4. 합집합 계산
-        int union = m1Size + m2Size - intersection;
         
-        // 5. 계산
-        if( union == 0 ) return 65536;
-        
-        double jac = (double) intersection / union;
-        
-        return (int) (jac * 65536);
-    }
-    
-    public ArrayList<String> makeMultiset(String str) {
-        // 1. 소문자 변환
-        str.toLowerCase();
-        ArrayList<String> multiSet = new ArrayList<>();
-        
-        for(int i = 0; i < str.length() - 1; i++) {
-            char a = str.charAt(i);
-            char b = str.charAt(i+1);
+        for(int i = 0; i < str2.length() - 1; i++) {
+            String s = str2.substring(i, i+2);
             
-            if( isAlphabet(a) && isAlphabet(b) ) {
-                multiSet.add(Character.toString(a) + Character.toString(b));
+            if( alphabetic(s) ) str2Lst.add(s);
+        }
+        
+        // 2. 교집합 계산
+        boolean[] visited1 = new boolean[str2Lst.size()];
+        int cnt1 = 0;
+        for(int i = 0; i < str1Lst.size(); i++) {
+            for(int j = 0; j < str2Lst.size(); j++) {
+                if( str1Lst.get(i).equals(str2Lst.get(j)) && !visited1[j] ) {
+                    cnt1 ++;
+                    visited1[j] = true;
+                    break;
+                }
             }
         }
-        return multiSet;
+        
+        if( str1Lst.size() == 0 && str2Lst.size() == 0 ) return 65536;
+        
+        // 3. 합집합 계산 
+        double cnt2 = str1Lst.size() + str2Lst.size() - cnt1;
+        
+        double jac =  cnt1 / cnt2;
+        answer = (int) ( jac * 65536);
+        
+        return answer;
     }
     
-    public boolean isAlphabet(char c) {
-        if( c >= 'a' && c <= 'z' ) return true;
-        return false;
+    public boolean alphabetic(String s) {
+        
+        for(char c : s.toCharArray()) {
+            if( c < 65 || c > 90 ) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
