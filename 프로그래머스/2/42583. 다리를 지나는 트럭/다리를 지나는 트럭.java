@@ -3,34 +3,39 @@ import java.util.*;
 class Solution {
     public int solution(int bridge_length, int weight, int[] truck_weights) {
         int answer = 0;
+        int seconds = 0;
+        int limit = 0;
         
-        // 1. bridge_length 만큼 0으로 된 큐 만들기
-        Queue<Integer> q = new LinkedList<>();
+        // 대기 큐
+        Queue<Integer> wq = new LinkedList<>();
+        for(int t : truck_weights){
+            wq.offer(t);
+        }
+        
+        // 다리 큐
+        Queue<Integer> bq = new LinkedList<>();
         for(int i = 0; i < bridge_length; i++) {
-            q.offer(0);
+            bq.offer(0);
         }
         
-        int idx = 0;
-        int currWeights = 0;
-        // 2. 트럭이 다 올라갈 때까지 
-        while ( idx < truck_weights.length ) {
-            answer += 1;
-            
-            int exited = q.poll();
-            currWeights -= exited;
-            
-            // 3. 새로운 트럭 올릴 수 있다면 
-            if( currWeights + truck_weights[idx] <= weight ) {
-                q.offer(truck_weights[idx]);
-                currWeights += truck_weights[idx];
-                idx += 1;
+        while( !wq.isEmpty() ) {
+            seconds ++;
+            limit -= bq.poll();
+                
+            // 트럭 더 올릴 수 있다면 
+            if( !wq.isEmpty() && limit + wq.peek() <= weight ) {
+                int truck = wq.poll();
+                
+                bq.offer(truck);
+                limit += truck;
             }
             
+            // 더 올릴 수 없다면 -> 0으로 채우기 
             else {
-                q.offer(0);
+                bq.offer(0);
             }
         }
-        
-        return answer + bridge_length;
+
+        return seconds + bridge_length;
     }
 }
