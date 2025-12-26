@@ -1,30 +1,36 @@
 import java.util.*;
 
 class Solution {
-    String curr;
-    List<String> lst;
-    String[] aeiou = {"A", "E", "I", "O", "U"};
+    char[] charArr = {'A', 'E', 'I', 'O', 'U'};
+    List<String> lst = new ArrayList<>();
     
     public int solution(String word) {
         int answer = 0;
         
-        // 1. 리스트 준비
-        lst = new ArrayList<>();
+        // 완전탐색 시작
+        DFS("");
         
-        curr = "";
-        DFS(curr);
+        String[] sArr = new String[lst.size()];
+        for(int i = 0; i < sArr.length; i++) {
+            sArr[i] = lst.get(i);
+        }
         
-        return lst.indexOf(word) + 1;
+        for(int i = 0; i < sArr.length; i++) {
+            if( sArr[i].equals(word) ) return i+1;
+        }
+        
+        return answer;
     }
     
     public void DFS(String s) {
-        // 1. 종료조건
-        if( s.length() > 5 ) return;
+        if( !s.equals("") ) {
+            lst.add(s);
+        }
         
-        if( !s.isEmpty() ) lst.add(s);
+        if( s.length() == 5 ) return;
         
-        for(int i = 0; i < 5; i++) {
-            DFS( s + aeiou[i] );
+        for(char c : charArr) {
+            DFS(s + c);
         }
     }
 }
