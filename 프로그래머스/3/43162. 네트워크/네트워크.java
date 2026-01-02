@@ -1,51 +1,45 @@
 import java.util.*;
 
 class Solution {
-    static ArrayList<Integer>[] arr;
+    static List<Integer>[] arrLst;
     static boolean[] visited;
+    static int count = 0;
     
     public int solution(int n, int[][] computers) {
-        int answer = 0;
-        int a = computers.length;
-        int b = computers[0].length;
+        visited = new boolean[n];
         
-        // 1. 인접 배열 리스트 초기화 + visited
-        arr = new ArrayList[a];
-        visited = new boolean[a];
-        for(int i = 0; i < arr.length; i++) {
-            arr[i] = new ArrayList<>();
+        // 1. 인접 연결리스트 생성 
+        arrLst = new ArrayList[n];
+        for(int i = 0; i < arrLst.length; i++) {
+            arrLst[i] = new ArrayList<>();
         }
         
-        // 2. 인접 배열 리스트 연결 
-        for(int i = 0; i < a; i++) {
-            for(int j = 0; j < b; j++) {
+        // 2. 인접 연결리스트 연결 
+        for(int i = 0; i < computers.length; i++) {
+            for(int j = 0; j < computers[i].length; j++) {
                 if(computers[i][j] == 1) {
-                    arr[i].add(j);
+                    arrLst[i].add(j); 
                 }
             }
         }
         
-        // 3. 노드 탐색하며 DFS 
+        // 모든 노드 순회하면서 DFS
         for(int i = 0; i < n; i++) {
-            // 미방문 노드라면 
             if( !visited[i] ) {
-                answer++;
-                // DFS
+                count++;
                 DFS(i);
             }
         }
-        return answer;
+        return count;
     }
     
-    public void DFS(int i) {
-        if( visited[i] ) return;
+    public void DFS(int node) {
+        // 해당 노드에 들어옴 -> 방문 표시 
+        visited[node] = true;
         
-        visited[i] = true;
-            
-        // 연결된 노드들에 한하여 DFS 시작
-        for(int a : arr[i]) {
-            if( !visited[a] ) 
-                DFS(a);
+        // 연결된 지점들 DFS
+        for(int a : arrLst[node]) {
+            if( !visited[a] ) DFS(a);
         }
     }
 }
