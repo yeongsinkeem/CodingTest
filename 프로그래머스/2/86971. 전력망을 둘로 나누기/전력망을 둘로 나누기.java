@@ -1,63 +1,59 @@
 import java.util.*;
 
 class Solution {
-    boolean[] visited;
+    boolean[] v;
+    int count;
+    int minCount = Integer.MAX_VALUE;
+    ArrayList<Integer>[] arr;
+    
     public int solution(int n, int[][] wires) {
-        int answer = Integer.MAX_VALUE;
-        
-        // 1. 인접 연결 리스트 생성 및 초기화
-        ArrayList<Integer>[] arrLst = new ArrayList[n];
-        for(int i = 0; i < n; i++) {
-            arrLst[i] = new ArrayList<>();
+        // 1. 인접연결리스트 및 방문 배열 생성 
+        arr = new ArrayList[n + 1];
+        for(int i = 0; i <= n; i++) {
+            arr[i] = new ArrayList<>();
         }
-        
-        // 2. 인접 연결 리스트 정의 
         for(int i = 0; i < wires.length; i++) {
-            int a = wires[i][0] - 1;
-            int b = wires[i][1] - 1;
+            int a = wires[i][0];
+            int b = wires[i][1];
             
-            // 양방향 추가
-            arrLst[a].add(b);
-            arrLst[b].add(a);
+            arr[a].add(b);
+            arr[b].add(a);
+        }
+        // v = new boolean[n + 1];
+        
+        // 2. DFS + 완전탐색 시작 
+        // 이때 하나 끊어보고 update하고 이런식으로 진행해야 하기 때문에 완전탐색 
+        for(int i = 0; i < wires.length; i++) {
+            v = new boolean[n+1];
+            count = 0;
+            int a = wires[i][0];
+            int b = wires[i][1];
+            
+            arr[a].remove(Integer.valueOf(b));
+            arr[b].remove(Integer.valueOf(a));
+            
+            // DFS
+            DFS(1);
+            
+            // 복구
+            arr[a].add(b);
+            arr[b].add(a);
+            
+            int diff = Math.abs(count - (n - count));
+            minCount = Math.min(minCount, diff);
         }
         
-        // 3. 완전 탐색 시작 : 간선 제거 
-        for(int i = 0; i < wires.length; i++) {
-            int a = wires[i][0] - 1;
-            int b = wires[i][1] - 1;
-            
-            // 4. 양방향 제거
-            arrLst[a].remove(Integer.valueOf(b));
-            arrLst[b].remove(Integer.valueOf(a));
-            
-            // 5. 제거했을 때 전력망 개수 세기
-            visited = new boolean[n];
-            // a 정점의 개수
-            int count = countPower(arrLst, visited, a);
-            
-            // 6. 두 전력망의 차이 
-            int diff = Math.abs( (n - count) - count);
-            answer = Math.min(answer, diff);
-            
-            // 7. 백트래킹 : 양방향 다시 추가
-            arrLst[a].add(b);
-            arrLst[b].add(a);    
-        }
-        return answer;
+        return minCount;
     }
     
-    // start와 연결된 정점 개수 세기 
-    public int countPower(ArrayList<Integer>[] list, boolean[] v, int start) {
-        v[start] = true;
-        int count = 1;
+    public void DFS(int node) {
+        // 방문 처리 
+        v[node] = true;
+        count++;
         
-        // 연결된 정점들에 대해 
-        for(int a : list[start]) {
-            if( !v[a] ) {
-                count += countPower(list, v, a);
-            }
+        for(int a : arr[node]) {
+            if( !v[a] ) DFS(a);
         }
-        
-        return count;
+    
     }
 }
