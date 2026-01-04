@@ -1,58 +1,70 @@
 import java.util.*;
 
 class Solution {
-    class word {
-        private String name;
-        private int level;
+    public class Word{
+        String name;
+        int count;
         
-        public word(String name, int level) {
+        public Word(String name, int count) {
             this.name = name;
-            this.level = level;
+            this.count = count;
         }
     }
+    
     public int solution(String begin, String target, String[] words) {
-        boolean[] visited = new boolean[words.length];
-        Queue<word> q = new LinkedList<>();
+        int answer = 0;
         
-        // 1. words에 target 없으면 0 반환
-        List<String> wordsLst = new ArrayList<>();
+        // 만약 해당 단어가 words에 없다면 바로 종료 
+        boolean flag = false;
         for(String w : words) {
-            wordsLst.add(w);
+            if( w.equals(target) ) {
+                flag = true;
+            }
         }
-        if( !wordsLst.contains(target) ) return 0;
+        if( !flag ) return 0;
         
-        q.offer(new word(begin, 0));
-        // 2. BFS 시작
+        // 1. 큐 준비 
+        Queue<Word> q = new LinkedList<>();
+        boolean[] v = new boolean[words.length];
+        
+        // 1. BFS 시작
+        q.offer(new Word(begin, 0));
+        
+        int count = 1;
         while( !q.isEmpty() ) {
-            word currWord = q.poll();
-            String currName = currWord.name;
-            int currLevel = currWord.level;
+            Word curr = q.poll();
             
-            if( currName.equals(target) ) return currLevel;
+            // 해당 단어가 target과 같다면 종료 
+            if( curr.name.equals(target) ) {
+                return curr.count;
+            }
             
+            // 2. words 순회하면서 
+            // 미방문 + 한 글자만 달라야 
             for(int i = 0; i < words.length; i++) {
-                // 3. 한글자만 다르고 미방문이라면 
-                if( isDiff(words[i], currName) && !visited[i] ) {
-                    q.offer(new word(words[i], currLevel + 1));
-                    visited[i] = true;
+                if( !v[i] ) {
+                    
+                    if( check(curr.name, words[i]) ) {
+                        // System.out.println("실행" + " " + words[i] + " " + curr.count);
+                        v[i] = true;
+                        q.offer(new Word(words[i], curr.count + 1));
+                    }
                 }
             }
         }
         
-        return 0;
+        return answer;
     }
     
-    // 한글자만 다르면 true
-    // 아예 다르면 false
-    public boolean isDiff(String a, String b) {
-        int cnt = 0;
+    public boolean check(String a, String b) {
+        int count = 0;
         
         for(int i = 0; i < a.length(); i++) {
-            if( a.charAt(i) != b.charAt(i) ) cnt ++;
-            
-            if( cnt > 1 ) return false;
+            if( a.charAt(i) != b.charAt(i) ) {
+                count++;
+            }
         }
-        
-        return true;
+        if( count <= 1 ) return true;
+        else return false;
     }
 }
