@@ -1,18 +1,15 @@
 -- 코드를 입력하세요
+-- 2022년 10월 16일에 대여 중인 자동차 
 SELECT CAR_ID, 
-    CASE
-        WHEN MAX(
-            CASE
-                WHEN '2022-10-16' BETWEEN START_DATE AND END_DATE THEN 1
-                ELSE 0
-            END
-        ) = 1 THEN '대여중'
-        ELSE '대여 가능'
-    END AS AVAILABILITY
+        CASE 
+            WHEN MAX(
+                CASE 
+                    WHEN START_DATE <= '2022-10-16' AND END_DATE >= '2022-10-16' THEN 1
+                    ELSE 0
+                END
+            ) = 1 THEN '대여중'
+            ELSE '대여 가능'
+        END AS AVAILABILITY
 FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
 GROUP BY CAR_ID
 ORDER BY CAR_ID DESC;
-
--- SELECT CAR_ID, START_DATE, END_DATE
--- FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
--- WHERE CAR_ID = '2';
