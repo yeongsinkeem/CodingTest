@@ -1,36 +1,35 @@
-import java.util.*;
-
 class Solution {
-    char[] charArr = {'A', 'E', 'I', 'O', 'U'};
-    List<String> lst = new ArrayList<>();
+    String[] aeiou = {"A", "E", "I", "O", "U"};
+    String word;
+    int count;
+    int answer;
     
     public int solution(String word) {
-        int answer = 0;
+        answer = 0;
+        this.word = word;
         
-        // 완전탐색 시작
+        // 1. DFS 시작 
         DFS("");
-        
-        String[] sArr = new String[lst.size()];
-        for(int i = 0; i < sArr.length; i++) {
-            sArr[i] = lst.get(i);
-        }
-        
-        for(int i = 0; i < sArr.length; i++) {
-            if( sArr[i].equals(word) ) return i+1;
-        }
         
         return answer;
     }
     
     public void DFS(String s) {
+        
+        // 종료 1 ) 문자열의 길이 > 5
+        if( s.length() > 5 ) return;
+        
+        // 종료 2 ) 내가 찾는 문자열과 현재 s 동일
         if( !s.equals("") ) {
-            lst.add(s);
+            count++;
+            if( s.equals(word) ) {
+                answer = count;
+                return;
+            }
         }
         
-        if( s.length() == 5 ) return;
-        
-        for(char c : charArr) {
-            DFS(s + c);
+        for(int i = 0; i < aeiou.length; i++) {
+            DFS(s + aeiou[i]);
         }
     }
 }
