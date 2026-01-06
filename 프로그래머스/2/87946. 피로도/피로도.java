@@ -1,25 +1,34 @@
 class Solution {
-    static int maxCnt = 0;
+    static int count = 0;
+    static boolean[] v;
+    static int curr;
+    static int[][] dungeons;
     
     public int solution(int k, int[][] dungeons) {
-        boolean[] v = new boolean[dungeons.length];
+        curr = 0; // 현재 몇 개의 스테이지 탐험했는지 
+        this.dungeons = dungeons;
         
-        // DFS 시작
-        DFS(k, v, 0, dungeons);
+        // 1. DFS + 완전 탐색 시작 
+        v = new boolean[dungeons.length];
         
-        return maxCnt;
+        DFS(k, curr);
+        
+        return count;
     }
     
-    // 현재 체력, 방문배열, 현재 노드 깊이, 던전 몇 개 ? 
-    public void DFS(int curr, boolean[] v, int cnt, int[][] dungeons) {
-        maxCnt = Math.max(maxCnt, cnt);
+    // 현재의 피로도, 던전 수 
+    public void DFS(int k, int curr) {  
+        count = Math.max(count, curr);
         
-        // 1. 던전 DFS
         for(int i = 0; i < dungeons.length; i++) {
-            // 2. 미방문 던전 && 최소 피로도 충족에 대해서 DFS
-            if( !v[i] && curr >= dungeons[i][0] ) {
-                v[i] = true;
-                DFS(curr - dungeons[i][1], v, cnt + 1, dungeons);
+            // 미방문 + 현재 피로도로 갈 수 있다면 
+            if( !v[i] && k >= dungeons[i][0] ) {
+                k = k - dungeons[i][1];
+                v[i] = true; 
+                
+                DFS(k, curr + 1);
+                
+                k += dungeons[i][1];
                 v[i] = false;
             }
         }
