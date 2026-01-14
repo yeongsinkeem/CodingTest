@@ -1,61 +1,51 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
+	static Set<Integer> set = new HashSet<>();
+	
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int M = Integer.parseInt(br.readLine());
+		
 		StringBuilder sb = new StringBuilder();
 		
-		int N = Integer.parseInt(br.readLine());
-		int bitset = 0;
-		
-		StringTokenizer st;
-		for(int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine());
-			String s = st.nextToken();
+		for(int i = 0; i < M; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			String method = st.nextToken();
 			
-			int num;
-			
-			switch(s) {
-			case "add":
-				num = Integer.parseInt(st.nextToken());
-				bitset |= (1<<(num-1));
-				break;
-			
-			case "remove":
-				num = Integer.parseInt(st.nextToken());
-				bitset &= ~(1<<(num-1));
-				break;
+			// add, remove, toggle : 원소 추가
+			if( method.equals("add") ) {
+				int element = Integer.parseInt(st.nextToken());
+				set.add(element);
+			}
+			else if( method.equals("remove") ) {
+				int element = Integer.parseInt(st.nextToken());
+				set.remove(element);
+			}
+			else if( method.equals("toggle") ) {
+				int element = Integer.parseInt(st.nextToken());
 				
-			case "check":
-				num = Integer.parseInt(st.nextToken());
-				// 해당 원소가 있다면 -> 1 출력 
-				if( (bitset & (1<<(num-1))) != 0 ) 
-					sb.append(1).append("\n");
-				else 
-					sb.append(0).append("\n");
-				break;
+				if( set.contains(element) ) set.remove(element);
+				else set.add(element);
+			}
+			else if( method.equals("check") ) {
+				int element = Integer.parseInt(st.nextToken());
 				
-			case "toggle":
-				num = Integer.parseInt(st.nextToken());
-				bitset ^= ( 1<<(num-1));
-				break;
-			
-			case "empty":
-				bitset = 0;
-				break;
-				
-			case "all":
-				// 1을 21개 만들고 거기서 -1을 하면 1이 20개 생성 ! 
-				bitset = (1<<20) - 1;
-				break;
+				if( set.contains(element) ) sb.append("1\n");
+				else sb.append("0\n");
+			}
+			else if( method.equals("all") ) {
+				// set = new HashSet<>();
+				for(int j = 1; j <= 20; j++) set.add(j);
+			}
+			else if( method.equals("empty")) {
+				set = new HashSet<>();
 			}
 		}
 		
 		System.out.println(sb.toString());
-		
 	}
 }
