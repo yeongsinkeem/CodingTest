@@ -50,8 +50,8 @@ class Solution {
         }
         
         int[] answer = new int[answerLst.size()];
-        for(int i = 0; i < answer.length; i++) {
-            answer[i] = answerLst.get(i);
+        for(int j = 0; j < answer.length; j++) {
+            answer[j] = answerLst.get(j);
         }
         
         return answer;
