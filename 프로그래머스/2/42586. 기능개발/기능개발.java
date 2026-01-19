@@ -5,7 +5,7 @@ class Solution {
         List<Integer> answerLst = new ArrayList<>();
         
         // 1. progresses - speeds 순회하면서 days 배열 만들기
-        int[] days = new int[progresses.length];
+        int[] day = new int[progresses.length];
         
         // 2. 날짜 계산
         for(int i = 0; i < progresses.length ; i++) {
@@ -14,14 +14,14 @@ class Solution {
             
             if( (100 - progresses[i]) % speeds[i] != 0 ) timeLeft ++;
 
-            days[i] = timeLeft;
+            day[i] = timeLeft;
         }
         
         // 3. Queue 준비
         Queue<Integer> q = new LinkedList<>();
         
         // 4. days 순회하면서 현재 요소가 q보다 작거나 같으면 q에 넣기
-        for(int d : days) {
+        for(int d : day) {
             if( q.isEmpty() || d <= q.peek() ) {
                 q.offer(d);
             }
