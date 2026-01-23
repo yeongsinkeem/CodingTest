@@ -10,9 +10,9 @@ class Solution {
         int close = 0;
         
         // 1. 열린 괄호라면 큐에 넣기
-        for(int i = 0; i < c.length; i++) {
-            if( c[i] == '(' ) {
-                queue.offer(c[i]);
+        for(int j = 0; j < c.length; j++) {
+            if( c[j] == '(' ) {
+                queue.offer(c[j]);
                 open++;
             }
             else {
