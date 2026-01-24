@@ -18,7 +18,7 @@ class Solution {
         // 가장 뒷 요소부터 제거 
         // 왜냐. 앞 요소들은 최선이기 때문
         if( k > 0 ) {
-            for(int i = 0; i < k; i++) {
+            for(int j = 0; j < k; j++) {
                 s.pop();
             }
         }
