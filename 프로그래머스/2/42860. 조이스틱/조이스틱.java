@@ -5,8 +5,8 @@ class Solution {
         
         // 1. 알파벳 
         int alpha = 0;
-        for(int i = 0; i < c.length; i++) {
-            int diff = c[i] - 'A';
+        for(int j = 0; j < c.length; j++) {
+            int diff = c[j] - 'A';
             alpha += Math.min(diff, 26 - diff);
         }
         
