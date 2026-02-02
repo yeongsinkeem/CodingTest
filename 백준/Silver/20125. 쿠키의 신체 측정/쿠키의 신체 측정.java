@@ -1,74 +1,91 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 	public static void main(String[] args) throws NumberFormatException, IOException {
+		// 심장 위치 : 머리 바로 아래 
+		// ( 팔, 다리, 허리 ) 길이  
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int mapSize = Integer.parseInt(br.readLine());
-		char [][]map = new char[mapSize + 1][mapSize + 1];
+		int N = Integer.parseInt(br.readLine());
 		
-		// 1. 보드판 만들기
-		for(int i = 1; i <= mapSize; i++) {
-			String line = br.readLine();
-			for(int j = 1; j <= mapSize; j++) {
-				map[i][j] = line.charAt(j - 1);
+		char[][] map = new char[N][N];
+		
+		// 1. 쿠키 표시
+		for(int i = 0; i < N; i++) {
+			String s = br.readLine();
+			for(int j = 0; j < N; j++) {
+				char c = s.charAt(j);
+				map[i][j] = c;
 			}
 		}
 		
-		// 2. 심장 위치 구하기 
-		boolean flag = false;
+		// 2. 위치 측정
+		// 2 - 1. 심장
 		int[] heart = new int[2];
-		for(int i = 1; i <= mapSize; i++) {
-			if( !flag ) {
-				for(int j = 1; j <= mapSize; j++) {
-					if(map[i][j] == '*') {
-						heart[0] = i + 1;
-						heart[1] = j;
-						flag = true;
-					}
+		boolean flag = false;
+		
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if( map[i][j] == '*' ) {
+					heart[0] = i + 2;
+					heart[1] = j + 1;
+					flag = true;
+					break;
 				}
+			}
+			if( flag ) break;
+		}
+		
+		// 2 - 2. 팔 
+		// 왼팔 : 0 ~ 심장 전 
+		// 오른팔 : 심장 후 ~ 끝 
+		// row는 심장 - 1이랑 동일 
+		int row = heart[0] - 1;
+		int leftHand = 0;
+		int rightHand = 0;
+		
+		for(int i = 0; i < heart[1] - 1; i++) {
+			if( map[row][i] == '*' ) {
+				leftHand++;
+			}
+		}
+		for(int i = heart[1]; i < N; i++) {
+			if( map[row][i] == '*' ) {
+				rightHand++;
 			}
 		}
 		
-		// 3. 팔/허리/다리 길이 구하기 
-		int x = heart[0];
-		int y = heart[1];
-		int[] body = new int[5];
+		// 2 - 3. 허리 
+		// col은 heart[1]과 같되, row는 달라야 
+		// row : heart[0] ~ 허리까지 
+		int waist = 0;
 		
-		for(int i = 1; i <= mapSize; i++) {
-			// 3-1. 팔 
-			// x는 동일하고, y는 작거나 커야. 이때 x좌표는 계속 동일 
-			for(int j = 1; j <= mapSize; j++) {
-				if( i == x && j < y && map[i][j] == '*' ) { 
-					body[0] = body[0] + 1;
-				}
-				else if( i == x && j > y && map[i][j] == '*' ) {
-					body[1] = body[1] + 1;
-				}
+		for(int i = heart[0]; i < N; i++) {
+			if( map[i][ heart[1] - 1 ] == '*' ) waist++;
+		}
+		
+		// 2 - 4. 다리
+		// row는 허리 + 1 ~ 끝 
+		int col = heart[0] + waist;
+		int leftLeg = 0;
+		int rightLeg = 0;
+		
+		for(int i = col; i < N; i++) {
+			if( map[i][heart[1] - 2] == '*' ) {
+				leftLeg++;
 			}
-			
-			// 3-2. 허리 
-			// x는 커야하고, y는 동일 
-			for(int j = 1; j <= mapSize; j++) {
-				if( i > x && j == y && map[i][j] == '*') {
-					body[2] = body[2] + 1;
-				}
-			}
-			
-			// 3-3. 다리 
-			for(int j = 1; j <= mapSize; j++) {
-				// x는 커야하고, y는 작거나 커야 함. 이때 y 좌표는 계속 동일 
-				if( i > x && j < y && map[i][j] == '*' ) {
-					body[3] = body[3] + 1;
-				}
-				else if( i > x && j > y && map[i][j] == '*') {
-					body[4] = body[4] + 1;
-				}
+		}
+		for(int i = col; i < N; i++) {
+			if( map[i][heart[1]] == '*' ) {
+				rightLeg++;
 			}
 		}
 		
 		System.out.println(heart[0] + " " + heart[1]);
-		System.out.println(body[0] + " " + body[1] + " " + body[2] + " " + body[3] + " " + body[4]);
+		System.out.println(leftHand + " " + rightHand + " " + waist + " " + leftLeg + " " + rightLeg);
+		
 	}
 }
