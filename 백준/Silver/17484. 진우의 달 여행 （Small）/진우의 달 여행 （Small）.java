@@ -4,80 +4,66 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-	public static class move {
-		int[] xy; // 현재 좌표 
-		int direction; // 이동 화살표 
-		int sum;
-		
-		public move(int[] xy, int direction, int sum) {
-			this.xy = xy;
-			this.direction = direction;
-			this.sum = sum;
-		}
-	}
-	
-	static int[] pos = {2, -1, 0, 1};
-	
 	public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int[][] map = new int[N+1][M+1];
-  
-        
-		// 1. map 설정
-        for(int i = 1; i <= N; i++) {
-        	st = new StringTokenizer(br.readLine());
-        	for(int j = 1; j <= M; j++) {
-        		map[i][j] = Integer.parseInt(st.nextToken());
-        	}
-        }
-        
-        // 2. Queue 준비 
-        Queue<move> q = new LinkedList<>();
-        // int[] xy = {0, 0};
-        // q.offer(new move(xy, 2, 0));
-        // 이렇게 하면 한 방향으로밖에 못 내려 감 
-        
-        // 0행에서 각 열(1~M)로 내려가는 모든 경우의 수
-        for (int j = 1; j <= M; j++) {
-            // 처음 시작할 때는 이전 방향이 없으므로(특수값 2), 모든 방향(-1, 0, 1)으로 시작 가능
-            q.offer(new move(new int[]{1, j}, -1, map[1][j]));
-            q.offer(new move(new int[]{1, j}, 0, map[1][j]));
-            q.offer(new move(new int[]{1, j}, 1, map[1][j]));
-        }
-        
-        int minSum = 100 * N;
-        // 3. BFS 시작 
-        while( !q.isEmpty()) {
-        	move curr = q.poll();
-        	int[] currXY = curr.xy;
-        	int currD = curr.direction;
-        	int currS = curr.sum;
-        	
-        	// 만약 현재 x의 좌표가 N과 같다면 -> minSum 값 업데이트 
-        	if( currXY[0] == N ) {
-        		minSum = Math.min(currS, minSum);
-        	}
-        	
-        	// 4. 이동 방향 
-        	for(int i = 1; i <= 3; i++) {
-        		int newX = currXY[0] + 1;
-        		int newY = currXY[1] + pos[i];
-        		
-        		// 5. map 벗어나지 않고, 이전 방향이 아니라면 queue에 넣기 
-        		if( newX <= N && newY <= M && newY >= 1 ) {
-        			if( currD != pos[i] ) {
-        				int[] newXY = {newX, newY};
-        				int newS = currS + map[newX][newY];
-        				q.offer(new move(newXY, pos[i], newS));
-   
-        			}
-        		}
-        	}
-        }
-        System.out.println(minSum);
+		// 17 : 18 ~ 
+		// DP -> 중복 + 이전 상태와 같이 제약 조건 존재 
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int[][] arr = new int[N][M];
+		
+		int[][][] dp = new int[N][M][3];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j = 0; j < M; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		
+		// 1. DP 배열 초기화 -> 첫번째 행 
+		for(int j = 0; j < M; j++) {
+			dp[0][j][0] = arr[0][j];
+			dp[0][j][1] = arr[0][j];
+			dp[0][j][2] = arr[0][j];
+		}
+		
+		for(int i = 1; i < N; i++) {
+			for(int j = 0; j < M; j++) {
+				for(int k = 0; k < 3; k++) {
+					dp[i][j][k] = Integer.MAX_VALUE;
+				}
+			}
+		}
+		
+		// 2. DP 테이블 채우기 : 2번째 행부터 
+		for(int i = 1; i < N; i++) {
+			for(int j = 0; j < M; j++) {
+				// 현재 칸 (i, j)로 올 수 있는 3가지 방향 계산 
+				// 왼쪽에서 내려오는 경우 ) 이전 칸 : i-1, j-1 
+				if( j - 1 >= 0 ) {
+					dp[i][j][0] = arr[i][j] + Math.min(dp[i-1][j-1][1], dp[i-1][j-1][2]);
+				}
+				
+				// 바로 위칸에서 내려오는 경우 ) 이전 칸 : i-1, j 
+				dp[i][j][1] = arr[i][j] + Math.min(dp[i-1][j][0], dp[i-1][j][2]);
+				
+				// 오른쪽에서 내려오는 경우 ) 이전 칸 : i-1, j+1
+				if( j + 1 < M ) {
+					dp[i][j][2] = arr[i][j] + Math.min(dp[i-1][j+1][0], dp[i-1][j+1][1]);
+				}
+			}
+		}
+		
+		int minSum = Integer.MAX_VALUE;
+		for(int j = 0; j < M; j++) {
+			for(int k = 0; k < 3; k++) {
+				minSum = Math.min(minSum,  dp[N-1][j][k]);
+			}
+		}
+		
+		System.out.println(minSum);
 	}
 }
